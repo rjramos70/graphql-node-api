@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "esnext"
+        ],
+        "target": "es6",     // vamos usar imports e exports no padrão do ES6.
+        "module": "commonjs" // Quando compilar esse código TypeScript, ele gere módulos no padrão CommomJS.
+    },
+    "compileOnSave": false,
+    "include": [    // quais são os arquivos que eu quero incluir para serem compilados. 
+        "src/**/*.ts"   // todos os arquivos que estejam dentro do diretório 'src' com a extensão '.ts' eu quero compilar.
+    ],
+    "exclude": [    // diretório que eu quero excluir, não quero incluir na nossa compilação do TypeScript
+        "node_modules"
+    ]
+}
