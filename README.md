@@ -32,5 +32,5 @@ http://www.dominio.com
 ![screenshot](https://github.com/rjramos70/graphql-node-api/blob/master/images/under_cosntruction_1.jpg)
  
 <p align="left">
-  <img src="https://github.com/rjramos70/graphql-node-api/blob/master/images/under_cosntruction_2.jpg" width="150" height="200" title="Print da interface do GraphQL">
+  <img src="https://github.com/rjramos70/graphql-node-api/blob/master/images/under_cosntruction_2.jpg" width="250" height="300" title="Print da interface do GraphQL">
 </p>
