@@ -1,5 +1,7 @@
 import * as Sequelize from "sequelize";
+import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 import { BaseModelInterface } from "../interfaces/BaseModelInterface";
+import { ModelsInterface } from "../interfaces/ModelsInterface";
 
 // Interface que vai ter os campos das nossas tabelas do banco de dados.
 export interface UserAttributes {
@@ -8,6 +10,8 @@ export interface UserAttributes {
     email?: string;
     password?: string;
     photo?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 // Interface que será usada quando trabalharmos com uma instância de um usuário
@@ -16,7 +20,7 @@ export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAt
     // Sequelize.Instance<UserAttributes> --> É usado para poder usar os métodos de instância do nosso registro
     // UserAttributes --> Acessa pela instância os atributos em si.
 
-    // Métodos
+    // Define as assinaturas dos métodos
     isPassword(encodePassword: string, password: string): boolean;
 
 }
@@ -62,8 +66,23 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
             hooks: {                // gatilho, seria como as triggers do SQL
                 beforeCreate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
                     // Vamos criptografar a senha antes de salvar no banco
+                    const salt = genSaltSync(); // gera um valor randomico que seráadicionado ao hash da senha do usuário.
+                    // critografando a senha do usuário
+                    user.password = hashSync(user.password, salt);
                 }
             }
         });
+
+        // Se quisermos fazer uma assciação entre Models
+        User.associate = (models: ModelsInterface): void => {
+            // aqui fariamos as associações.
+        };
+
+        // Implementa os métodos
+        User.prototype.isPassword = (encodePassword: string, password: string): boolean => {
+            // compara a senha aberta(password) com a senha criptografada(encodePassword).
+            return compareSync(password, encodePassword);
+        }
+
     return User;    
 };

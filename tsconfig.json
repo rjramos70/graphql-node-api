@@ -1,10 +1,11 @@
 {
     "compilerOptions": {
         "lib": [
-            "esnext"
+            "esnext", "es2015", "es2015.iterable", "dom"
         ],
         "target": "es6",     // vamos usar imports e exports no padrão do ES6.
         "module": "commonjs" // Quando compilar esse código TypeScript, ele gere módulos no padrão CommomJS.
+        
     },
     "compileOnSave": false,
     "include": [    // quais são os arquivos que eu quero incluir para serem compilados. 
