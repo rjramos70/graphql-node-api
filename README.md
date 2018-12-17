@@ -29,8 +29,8 @@ http://www.dominio.com
 
 ### Screenshot
 
-![screenshot](https://png.pngtree.com/element_origin_min_pic/20/16/02/2356cbc395c0db5.jpg)
+![screenshot](https://github.com/rjramos70/graphql-node-api/blob/master/images/under_cosntruction_1.jpg)
  
 <p align="center">
-  <img src="https://png.pngtree.com/element_origin_min_pic/20/16/02/2356cbc395c0db5.jpg" width="350" title="hover text">
+  <img src="https://github.com/rjramos70/graphql-node-api/blob/master/images/under_cosntruction_1.jpg" width="350" title="hover text">
 </p>
