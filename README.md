@@ -29,5 +29,5 @@ http://www.dominio.com
 
 ### Screenshot
 
-![screen shot](https://png.pngtree.com/element_origin_min_pic/20/16/02/2356cbc395c0db5.jpg)
+![screenshot](https://png.pngtree.com/element_origin_min_pic/20/16/02/2356cbc395c0db5.jpg)
  
