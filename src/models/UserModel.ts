@@ -69,6 +69,12 @@ export default (sequelize: Sequelize.Sequelize, DataTypes: Sequelize.DataTypes):
                     const salt = genSaltSync(); // gera um valor randomico que seráadicionado ao hash da senha do usuário.
                     // critografando a senha do usuário
                     user.password = hashSync(user.password, salt);
+                },
+                beforeUpdate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
+                    if (user.changed('password')) {
+                        const salt = genSaltSync(); 
+                        user.password = hashSync(user.password, salt);
+                    }
                 }
             }
         });

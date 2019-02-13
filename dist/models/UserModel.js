@@ -41,6 +41,12 @@ exports.default = (sequelize, DataTypes) => {
                 const salt = bcryptjs_1.genSaltSync(); // gera um valor randomico que seráadicionado ao hash da senha do usuário.
                 // critografando a senha do usuário
                 user.password = bcryptjs_1.hashSync(user.password, salt);
+            },
+            beforeUpdate: (user, options) => {
+                if (user.changed('password')) {
+                    const salt = bcryptjs_1.genSaltSync();
+                    user.password = bcryptjs_1.hashSync(user.password, salt);
+                }
             }
         }
     });

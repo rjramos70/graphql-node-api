@@ -1,6 +1,9 @@
 import * as express from 'express';
 import * as graphqlHTTP from 'express-graphql';
 
+// importando a nossa conexão ao banco de dados.
+import db from './models/index';
+
 // importando nosso schema
 import schema from './graphql/schema';
 
@@ -14,22 +17,24 @@ class App {
     }
 
     private middleware(): void {
-        // os parametros podem ser tipados ou não, nesse exemplo estamos tipando
-        // Como estamos usando o 'use' esta requisição vai atender a GET, POST, PUT, DELETE, etc...
-        /*
-        this.express.use('/hello', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            res.send({
-                hello: 'Hello World!'
-            });
-        });
-        */
 
         // Usando nosso 'express-graphql'
-        this.express.use('/graphql', graphqlHTTP({
-            schema: schema,
-            // Só habilitamos essa interface para 'development'
-            graphiql: process.env.NODE_ENV === 'development'
-        }));
+        this.express.use('/graphql',
+
+            (req, res, next) => {
+                req['context'] = {};
+                req['context'].db = db;
+                next(); // usado para sair e chamar o próximo middleware
+            },
+        
+            graphqlHTTP((req) => ({
+                schema: schema,
+                // Só habilitamos essa interface para 'development'
+                graphiql: process.env.NODE_ENV === 'development',
+                context: req['context']     // pega nosso objeto context e insere 
+                                            // dentro da nossa propriedade GraphQL.
+            }))
+        );
     }
 }
 

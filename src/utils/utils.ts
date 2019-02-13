@@ -41,3 +41,10 @@ export const onListening = (server: Server) => {
         
     }
 }
+
+// Manipulador de erro do Sequelize
+export const handleError = (erro: Error) => {
+    let erroMessage: string = `${erro.name}: ${erro.message}`;
+    console.log(erroMessage);
+    return Promise.reject(new Error(erroMessage));
+}

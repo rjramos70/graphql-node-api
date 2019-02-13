@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const graphqlHTTP = require("express-graphql");
+// importando a nossa conexão ao banco de dados.
+const index_1 = require("./models/index");
 // importando nosso schema
 const schema_1 = require("./graphql/schema");
 class App {
@@ -10,21 +12,18 @@ class App {
         this.middleware();
     }
     middleware() {
-        // os parametros podem ser tipados ou não, nesse exemplo estamos tipando
-        // Como estamos usando o 'use' esta requisição vai atender a GET, POST, PUT, DELETE, etc...
-        /*
-        this.express.use('/hello', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            res.send({
-                hello: 'Hello World!'
-            });
-        });
-        */
         // Usando nosso 'express-graphql'
-        this.express.use('/graphql', graphqlHTTP({
+        this.express.use('/graphql', (req, res, next) => {
+            req['context'] = {};
+            req['context'].db = index_1.default;
+            next(); // usado para sair e chamar o próximo middleware
+        }, graphqlHTTP((req) => ({
             schema: schema_1.default,
             // Só habilitamos essa interface para 'development'
-            graphiql: process.env.NODE_ENV === 'development'
-        }));
+            graphiql: process.env.NODE_ENV === 'development',
+            context: req['context'] // pega nosso objeto context e insere 
+            // dentro da nossa propriedade GraphQL.
+        })));
     }
 }
 exports.default = new App().express;

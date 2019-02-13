@@ -41,3 +41,9 @@ exports.onListening = (server) => {
         console.log(`Listening at ${bind}...`);
     };
 };
+// Manipulador de erro do Sequelize
+exports.handleError = (erro) => {
+    let erroMessage = `${erro.name}: ${erro.message}`;
+    console.log(erroMessage);
+    return Promise.reject(new Error(erroMessage));
+};
