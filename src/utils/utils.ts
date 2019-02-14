@@ -47,4 +47,7 @@ export const handleError = (erro: Error) => {
     let erroMessage: string = `${erro.name}: ${erro.message}`;
     console.log(erroMessage);
     return Promise.reject(new Error(erroMessage));
-}
+};
+
+// chave secreta para assinarmos nossos Tokens com variavel de ambiente
+export const JWT_SECRET: string = process.env.JWT_SECRET;
