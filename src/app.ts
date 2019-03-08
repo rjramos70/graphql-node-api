@@ -6,6 +6,7 @@ import db from './models/index';
 
 // importando nosso schema
 import schema from './graphql/schema';
+import { extractJwtMiddleware } from './middlewares/extract-jwt.middleware';
 
 class App {
 
@@ -21,8 +22,11 @@ class App {
         // Usando nosso 'express-graphql'
         this.express.use('/graphql',
 
+            // middlare que valida o Token
+            extractJwtMiddleware(),
+
             (req, res, next) => {
-                req['context'] = {};
+                // req['context'] = {}; // foi removido porque já é criado o contexto no 'extractJwtMiddleware'
                 req['context'].db = db;
                 next(); // usado para sair e chamar o próximo middleware
             },

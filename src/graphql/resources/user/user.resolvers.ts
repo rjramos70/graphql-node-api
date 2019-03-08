@@ -3,6 +3,9 @@ import { DbConnection } from '../../../interfaces/DbConnectionInterface';
 import { UserInstance } from '../../../models/UserModel';
 import { Transaction } from 'sequelize';
 import { handleError } from '../../../utils/utils';
+import { compose } from '../../composable/composable.resolver';
+import { authResolver } from '../../composable/auth.resolver';
+import { verifyTokenResolver } from '../../composable/verify-token.resolver';
 
 export const userResolvers = {
 
@@ -23,7 +26,7 @@ export const userResolvers = {
         // o terceiro parametro 'context' foi desestruturado para {db}:{db: DbConnection} 
         // o segundo parametro 'args' foi desestruturdo para {first = 10, offset = 0} que são valores 
         // default que serão assumidos se não forem passados valores.
-        users: (parent, {first = 10, offset = 0}, {db}: {db: DbConnection}, info: GraphQLResolveInfo) => {
+        users: compose(authResolver, verifyTokenResolver)((parent, {first = 10, offset = 0}, {db}: {db: DbConnection}, info: GraphQLResolveInfo) => {
             // Abaixo a camada de Banco de Dados
             // Aqui devemos fazer o SQL no banco para trazer os usuários.
             return db.User
@@ -32,7 +35,7 @@ export const userResolvers = {
                         offset: offset
                     })
                     .catch(handleError);
-        },
+        }),
         // user: (parent, args, context, info) => {
         user: (parent, {id}, {db}: {db: DbConnection}, info: GraphQLResolveInfo) => {
             id = parseInt(id);  // Faz um paser do tipo 'ID' para Int;

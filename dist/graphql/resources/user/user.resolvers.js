@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../../utils/utils");
+const composable_resolver_1 = require("../../composable/composable.resolver");
+const auth_resolver_1 = require("../../composable/auth.resolver");
+const verify_token_resolver_1 = require("../../composable/verify-token.resolver");
 exports.userResolvers = {
     User: {
         // Esse campo 'post'vai ser implementado um 'resolver' não trivial.
@@ -18,7 +21,7 @@ exports.userResolvers = {
         // o terceiro parametro 'context' foi desestruturado para {db}:{db: DbConnection} 
         // o segundo parametro 'args' foi desestruturdo para {first = 10, offset = 0} que são valores 
         // default que serão assumidos se não forem passados valores.
-        users: (parent, { first = 10, offset = 0 }, { db }, info) => {
+        users: composable_resolver_1.compose(auth_resolver_1.authResolver, verify_token_resolver_1.verifyTokenResolver)((parent, { first = 10, offset = 0 }, { db }, info) => {
             // Abaixo a camada de Banco de Dados
             // Aqui devemos fazer o SQL no banco para trazer os usuários.
             return db.User
@@ -27,7 +30,7 @@ exports.userResolvers = {
                 offset: offset
             })
                 .catch(utils_1.handleError);
-        },
+        }),
         // user: (parent, args, context, info) => {
         user: (parent, { id }, { db }, info) => {
             id = parseInt(id); // Faz um paser do tipo 'ID' para Int;
