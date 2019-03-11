@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../../utils/utils");
 const composable_resolver_1 = require("../../composable/composable.resolver");
 const auth_resolver_1 = require("../../composable/auth.resolver");
-const verify_token_resolver_1 = require("../../composable/verify-token.resolver");
+// import { verifyTokenResolver } from '../../composable/verify-token.resolver';
 exports.userResolvers = {
     User: {
         // Esse campo 'post'vai ser implementado um 'resolver' não trivial.
@@ -21,7 +21,7 @@ exports.userResolvers = {
         // o terceiro parametro 'context' foi desestruturado para {db}:{db: DbConnection} 
         // o segundo parametro 'args' foi desestruturdo para {first = 10, offset = 0} que são valores 
         // default que serão assumidos se não forem passados valores.
-        users: composable_resolver_1.compose(auth_resolver_1.authResolver, verify_token_resolver_1.verifyTokenResolver)((parent, { first = 10, offset = 0 }, { db }, info) => {
+        users: (parent, { first = 10, offset = 0 }, { db }, info) => {
             // Abaixo a camada de Banco de Dados
             // Aqui devemos fazer o SQL no banco para trazer os usuários.
             return db.User
@@ -30,7 +30,7 @@ exports.userResolvers = {
                 offset: offset
             })
                 .catch(utils_1.handleError);
-        }),
+        },
         // user: (parent, args, context, info) => {
         user: (parent, { id }, { db }, info) => {
             id = parseInt(id); // Faz um paser do tipo 'ID' para Int;
@@ -54,48 +54,45 @@ exports.userResolvers = {
             })
                 .catch(utils_1.handleError);
         },
-        updateUser: (parent, { id, input }, { db }, info) => {
-            id = parseInt(id); // Faz um paser do tipo 'ID' para Int;
+        updateUser: composable_resolver_1.compose(...auth_resolver_1.authResolvers)((parent, { input }, { db, authUser }, info) => {
+            // id = parseInt(id);  // Faz um paser do tipo 'ID' para Int;
             return db.sequelize.transaction((t) => {
                 return db.User
-                    .findById(id) // primeiro busca pelo 'id'
+                    .findById(authUser.id) // pega o ID pelo 'authUser'
                     .then((user) => {
-                    if (!user)
-                        throw new Error(`User with id ${id} not found!`);
+                    utils_1.throwError(!user, `User with id ${authUser.id} not found!`);
                     return user.update(input, { transaction: t });
                 });
             })
                 .catch(utils_1.handleError);
-        },
-        updateUserPassword: (parent, { id, input }, { db }, info) => {
-            id = parseInt(id); // Faz um paser do tipo 'ID' para Int;
+        }),
+        updateUserPassword: composable_resolver_1.compose(...auth_resolver_1.authResolvers)((parent, { input }, { db, authUser }, info) => {
+            // id = parseInt(id);  // Faz um paser do tipo 'ID' para Int;
             return db.sequelize.transaction((t) => {
                 return db.User
-                    .findById(id) // primeiro busca pelo 'id'
+                    .findById(authUser.id) // primeiro busca pelo 'id'
                     .then((user) => {
-                    if (!user)
-                        throw new Error(`User with id ${id} not found!`);
+                    utils_1.throwError(!user, `User with id ${authUser.id} not found!`);
                     return user
                         .update(input, { transaction: t })
                         .then((user) => !!user);
                 });
             })
                 .catch(utils_1.handleError);
-        },
-        deleteUser: (parent, { id }, { db }, info) => {
-            id = parseInt(id); // Faz um paser do tipo 'ID' para Int;
+        }),
+        deleteUser: composable_resolver_1.compose(...auth_resolver_1.authResolvers)((parent, args, { db, authUser }, info) => {
+            // id = parseInt(id);  // Faz um paser do tipo 'ID' para Int;
             return db.sequelize.transaction((t) => {
                 return db.User
-                    .findById(id)
+                    .findById(authUser.id)
                     .then((user) => {
-                    if (!user)
-                        throw new Error(`User with id ${id} not found!`);
+                    utils_1.throwError(!user, `User with id ${authUser.id} not found!`);
                     return user
                         .destroy({ transaction: t })
                         .then(user => !!user);
                 });
             })
                 .catch(utils_1.handleError);
-        }
+        })
     }
 };

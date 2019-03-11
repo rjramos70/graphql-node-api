@@ -49,5 +49,10 @@ export const handleError = (erro: Error) => {
     return Promise.reject(new Error(erroMessage));
 };
 
+// tratamete da mensagem de erro
+export const throwError = (condition: boolean, message: string): void => {
+    if(condition){ throw new Error(message); }
+}
+
 // chave secreta para assinarmos nossos Tokens com variavel de ambiente
 export const JWT_SECRET: string = process.env.JWT_SECRET;

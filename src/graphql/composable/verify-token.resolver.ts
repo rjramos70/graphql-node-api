@@ -16,7 +16,7 @@ export const verifyTokenResolver: ComposableResolver<any, ResolverContext> =
             const token: string = context.authorization ? context.authorization.split(' ')[1] : undefined;
 
             // agora verificamos o nosso Token
-            jwt.verify(token, JWT_SECRET, (err, decoded: any) => {
+            return jwt.verify(token, JWT_SECRET, (err, decoded: any) => {
                 // se for um Token válido
                 if (!err) {
                     return resolver(parent, args, context, info);

@@ -35,7 +35,7 @@ exports.extractJwtMiddleware = () => {
                 // se existir um registro de usuário válido
                 if (user) {
                     // colocar as informações do usuário dentro do contexto
-                    req['context']['user'] = {
+                    req['context']['authUser'] = {
                         id: user.get('id'),
                         email: user.get('email')
                     };

@@ -47,5 +47,11 @@ exports.handleError = (erro) => {
     console.log(erroMessage);
     return Promise.reject(new Error(erroMessage));
 };
+// tratamete da mensagem de erro
+exports.throwError = (condition, message) => {
+    if (condition) {
+        throw new Error(message);
+    }
+};
 // chave secreta para assinarmos nossos Tokens com variavel de ambiente
 exports.JWT_SECRET = process.env.JWT_SECRET;
