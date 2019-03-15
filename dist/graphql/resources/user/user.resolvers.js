@@ -39,12 +39,20 @@ exports.userResolvers = {
                 .then((user) => {
                 if (!user) {
                     // Se for passado um 'id' de um usuário que não existe, lança um Error;
-                    throw new Error(`User with is ${id} not found!`);
+                    utils_1.throwError(!user, `User with id ${id} not found!`);
                 }
                 return user;
             })
                 .catch(utils_1.handleError);
-        }
+        },
+        currentUser: composable_resolver_1.compose(...auth_resolver_1.authResolvers)((parent, args, { db, authUser }, info) => {
+            return db.User
+                .findById(authUser.id) // pega o ID pelo 'authUser'
+                .then((user) => {
+                utils_1.throwError(!user, `User with id ${authUser.id} not found!`);
+                return user;
+            }).catch(utils_1.handleError);
+        })
     },
     Mutation: {
         createUser: (parent, { input }, { db }, info) => {

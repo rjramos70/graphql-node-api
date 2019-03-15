@@ -49,12 +49,20 @@ export const userResolvers = {
                 .then((user: UserInstance) => {
                     if (!user) {
                         // Se for passado um 'id' de um usuário que não existe, lança um Error;
-                        throw new Error(`User with is ${id} not found!`);
+                        throwError (!user, `User with id ${id} not found!`);
                     }
                     return user;
                 })
                 .catch(handleError);
-        }
+        },
+        currentUser: compose(...authResolvers)((parent, args, {db, authUser}: {db: DbConnection, authUser: AuthUser}, info: GraphQLResolveInfo) => {
+            return db.User
+                .findById(authUser.id)   // pega o ID pelo 'authUser'
+                .then((user: UserInstance) => {
+                    throwError (!user, `User with id ${authUser.id} not found!`); 
+                    return user;
+                }).catch(handleError);    
+        })
 
     },
     Mutation: {
